@@ -1,4 +1,5 @@
 composer.lock
 private.key
 vendor/
+jupyter-php-installer.phar
 .idea

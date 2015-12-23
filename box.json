@@ -4,12 +4,13 @@
     "directories": ["src"],
     "files": [
         "LICENSE",
-        "README.md"
+        "README.md",
+        "public.key"
     ],
     "finder": [
         {
             "name": "*.php",
-            "exclude": ["Tests"],
+            "exclude": ["Tests", "kherge"],
             "in": "vendor"
         }
     ],
