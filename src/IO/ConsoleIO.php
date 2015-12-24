@@ -30,7 +30,7 @@ use Symfony\Component\Console\Question\Question;
  * @author Jordi Boggiano <j.boggiano@seld.be>
  * @author Andres Correa <castarco@litipk.com>
  */
-class ConsoleIO implements IOInterface
+final class ConsoleIO implements IOInterface
 {
     protected $input;
     protected $output;
