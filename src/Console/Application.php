@@ -26,7 +26,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class Application extends BaseApplication
 {
     /** @var IOInterface */
-    protected $io;
+    private $io;
 
     public function __construct()
     {
@@ -99,6 +99,14 @@ final class Application extends BaseApplication
         }
 
         return parent::doRun($input, $output);
+    }
+
+    /**
+     * @return IOInterface
+     */
+    public function getIO()
+    {
+        return $this->io;
     }
 
     /**

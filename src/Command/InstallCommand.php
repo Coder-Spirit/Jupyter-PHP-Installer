@@ -4,7 +4,7 @@
 namespace Litipk\JupyterPhpInstaller\Command;
 
 
-use Symfony\Component\Console\Command\Command;
+use Litipk\JupyterPhpInstaller\Installer\Installer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,6 +41,9 @@ final class InstallCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $installPath = ($input->hasArgument('path')) ? $input->getArgument('path') : null;
+        $composerCmd = ($input->hasArgument('composer_cmd')) ? $input->getArgument('composer_cmd') : null;
 
+        $installer = Installer::getInstaller($installPath, $composerCmd);
     }
 }
