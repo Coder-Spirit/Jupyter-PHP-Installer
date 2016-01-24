@@ -13,6 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class InstallCommand extends Command
 {
+    const RETURN_CODE_OK = 0;
+    const RETURN_CODE_INSTALLER_INSTANTIATION_ERROR = 1;
+
     protected function configure()
     {
         $this
@@ -44,6 +47,18 @@ final class InstallCommand extends Command
         $installPath = ($input->hasArgument('path')) ? $input->getArgument('path') : null;
         $composerCmd = ($input->hasArgument('composer_cmd')) ? $input->getArgument('composer_cmd') : null;
 
-        $installer = Installer::getInstaller($installPath, $composerCmd);
+        $io = $this->getIO();
+
+        try {
+            $installer = Installer::getInstaller($composerCmd, $installPath);
+        } catch (\RuntimeException $e) {
+            $io->writeError('ERROR: '.$e->getMessage());
+            // TODO : Use verbosity levels to enable showing the stacktrace
+            return self::RETURN_CODE_INSTALLER_INSTANTIATION_ERROR;
+        }
+
+
+
+        return self::RETURN_CODE_OK;
     }
 }

@@ -41,4 +41,10 @@ final class WindowsSystem extends System
     {
         return true;
     }
+
+    /** @return string */
+    public function getComposerCommand()
+    {
+        return 'composer';
+    }
 }

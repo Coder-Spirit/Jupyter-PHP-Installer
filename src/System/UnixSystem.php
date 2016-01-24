@@ -48,4 +48,59 @@ abstract class UnixSystem extends System
 
         return filter_var($sysResponse, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
+
+    /** @return string|null */
+    public function getComposerCommand()
+    {
+        $potentialCommands = [
+            'composer', 'composer.phar', './composer.phar', './composer', './bin/composer', './bin/composer.phar',
+            './vendor/bin/composer', './vendor/bin/composer.phar', '../vendor/bin/composer',
+            '../vendor/bin/composer.phar', '../../vendor/bin/composer', '../../vendor/bin/composer.phar'
+        ];
+
+        foreach ($potentialCommands as $potentialCommand) {
+            if ($this->checkIfCommandExists($potentialCommand)) {
+                return $potentialCommand;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns true if the path is a "valid" path and is writable (event if the complete path does not yet exist).
+     * @param string $path
+     * @return boolean
+     */
+    public function validatePath($path)
+    {
+        $absPath = $this->getAbsolutePath($path);
+    }
+
+    /**
+     * @param string $path
+     * @return string The "absolute path" version of $path.
+     */
+    public function ensurePath($path)
+    {
+
+    }
+
+    /**
+     * @param string $path
+     * @return bool
+     */
+    protected function isAbsolutePath($path)
+    {
+        return (1 === preg_match('#^/#', $path));
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    protected function getAbsolutePath($path)
+    {
+        return $this->isAbsolutePath($path) ? $path : (getcwd() . DIRECTORY_SEPARATOR . $path);
+    }
 }

@@ -46,6 +46,34 @@ abstract class System
      */
     public abstract function checkIfCommandExists($cmdName);
 
+    /** @return string|null */
+    public abstract function getComposerCommand();
+
+    /**
+     * Returns true if the path is a "valid" path and is writable (event if the complete path does not yet exist).
+     * @param string $path
+     * @return boolean
+     */
+    public abstract function validatePath($path);
+
+    /**
+     * @param string $path
+     * @return string The "absolute path" version of $path.
+     */
+    public abstract function ensurePath($path);
+
+    /**
+     * @param string $path
+     * @return boolean
+     */
+    protected abstract function isAbsolutePath($path);
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    protected abstract function getAbsolutePath($path);
+
     /** @return integer */
     private static function guessOperativeSystem()
     {
