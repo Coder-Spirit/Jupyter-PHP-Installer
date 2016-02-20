@@ -18,4 +18,18 @@ final class LinuxInstaller extends Installer
     {
         parent::__construct($system, $composerCmd);
     }
+
+    /**
+     * @return string
+     */
+    public function getInstallPath()
+    {
+        $currentUser = $this->system->getCurrentUser();
+
+        if ('root' === $currentUser) {
+            return '/opt/jupyter-php';
+        } else {
+            return $this->system->getCurrentUserHome().'/.jupyter-php';
+        }
+    }
 }

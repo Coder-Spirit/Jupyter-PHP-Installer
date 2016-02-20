@@ -15,6 +15,7 @@ final class InstallCommand extends Command
 {
     const RETURN_CODE_OK = 0;
     const RETURN_CODE_INSTALLER_INSTANTIATION_ERROR = 1;
+    const RETURN_CODE_INSTALLER_INSTALL_ERROR = 2;
 
     protected function configure()
     {
@@ -50,14 +51,20 @@ final class InstallCommand extends Command
         $io = $this->getIO();
 
         try {
-            $installer = Installer::getInstaller($composerCmd, $installPath);
+            $installer = Installer::getInstaller($composerCmd);
         } catch (\RuntimeException $e) {
             $io->writeError('ERROR: '.$e->getMessage());
             // TODO : Use verbosity levels to enable showing the stacktrace
             return self::RETURN_CODE_INSTALLER_INSTANTIATION_ERROR;
         }
 
-
+        try {
+            $installer->install($installPath);
+        } catch (\RuntimeException $e) {
+            $io->writeError('ERROR: '.$e->getMessage());
+            // TODO : Use verbosity levels to enable showing the stacktrace
+            return self::RETURN_CODE_INSTALLER_INSTALL_ERROR;
+        }
 
         return self::RETURN_CODE_OK;
     }

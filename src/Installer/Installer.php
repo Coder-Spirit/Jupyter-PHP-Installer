@@ -19,20 +19,15 @@ abstract class Installer
 
     /**
      * @param null|string $composerCmd
-     * @param null|string $installPath
      * @return Installer
      */
-    public static function getInstaller($composerCmd = null, $installPath = null)
+    public static function getInstaller($composerCmd = null)
     {
         $system = System::getSystem();
         $composerCmd = (null !== $composerCmd) ? $composerCmd : $system->getComposerCommand();
 
         if (null === $composerCmd || !$system->checkIfCommandExists($composerCmd)) {
             throw new \RuntimeException('Unable to find the composer executable.');
-        }
-
-        if (null !== $installPath && !$system->validatePath($installPath)) {
-            throw new \RuntimeException('Invalid install path.');
         }
 
         if ($system instanceof UnixSystem) {
@@ -45,6 +40,24 @@ abstract class Installer
             throw new \RuntimeException('This platform is unknown for the installer');
         }
     }
+
+    /**
+     * @param null|string $installPath
+     */
+    public function install($installPath = null)
+    {
+        $installPath = (null !== $installPath) ? $installPath : $this->getInstallPath();
+        if (null !== $installPath && !$this->system->validatePath($installPath)) {
+            throw new \RuntimeException('Invalid install path.');
+        }
+
+        $this->system->ensurePath($installPath);
+    }
+
+    /**
+     * @return string
+     */
+    public abstract function getInstallPath();
 
     /**
      * Installer constructor.
