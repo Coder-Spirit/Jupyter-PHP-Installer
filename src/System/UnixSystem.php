@@ -68,13 +68,44 @@ abstract class UnixSystem extends System
     }
 
     /**
-     * Returns true if the path is a "valid" path and is writable (event if the complete path does not yet exist).
+     * Returns true if the path is a "valid" path and is writable (even if the complete path does not yet exist).
      * @param string $path
      * @return boolean
      */
     public function validatePath($path)
     {
         $absPath = $this->getAbsolutePath($path);
+        $absPathParts = preg_split('/\//', preg_replace('/(^\/|\/$)/', '', $absPath));
+        $nSteps = count($absPath);
+
+        $tmpPath = '';
+        $prevReadable = false;
+        $prevWritable = false;
+
+        for ($i=0; $i<$nSteps; $i++) {
+            $tmpPath .= '/' . $absPathParts[$i];
+
+            if (file_exists($tmpPath)) {
+                if (!is_dir($tmpPath)) {
+                    if (is_link($tmpPath)) {
+                        $linkPath = readlink($tmpPath);
+                        if (false === $linkPath || !is_dir($linkPath)) {
+                            return false;
+                        }
+                        $tmpPath = $linkPath;
+                    } else {
+                        return false;
+                    }
+                }
+
+                $prevReadable = is_readable($tmpPath);
+                $prevWritable = is_writable($tmpPath);
+            } else {
+                return ($prevReadable && $prevWritable);
+            }
+        }
+
+        return true;
     }
 
     /**
