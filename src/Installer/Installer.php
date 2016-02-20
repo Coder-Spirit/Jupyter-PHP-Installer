@@ -52,12 +52,39 @@ abstract class Installer
         }
 
         $this->system->ensurePath($installPath);
+        $this->executeComposerCommand($installPath);
+
+        $this->installKernel();
     }
 
     /**
      * @return string
      */
-    public abstract function getInstallPath();
+    protected abstract function getInstallPath();
+
+    /**
+     *
+     */
+    protected abstract function installKernel();
+
+    /**
+     * @param string $installPath
+     */
+    protected function executeComposerCommand($installPath)
+    {
+        $composerStatus = 0;
+
+        echo "\n";
+        passthru(
+            $this->composerCmd.' --working-dir="'.$installPath.'" create-project dawehner/jupyter-php pkgs',
+            $composerStatus
+        );
+        echo "\n";
+
+        if ($composerStatus !== 0) {
+            throw new \RuntimeException('Error while trying to download Jupyter-PHP dependencies with Composer.');
+        }
+    }
 
     /**
      * Installer constructor.
