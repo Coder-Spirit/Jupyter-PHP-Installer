@@ -76,7 +76,7 @@ abstract class Installer
 
         echo "\n";
         passthru(
-            $this->composerCmd.' --working-dir="'.$installPath.'" create-project dawehner/jupyter-php pkgs',
+            'PATH='.getenv('PATH').' '.$this->composerCmd.' --working-dir="'.$installPath.'" create-project dawehner/jupyter-php pkgs',
             $composerStatus
         );
         echo "\n";

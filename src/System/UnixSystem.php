@@ -43,6 +43,7 @@ abstract class UnixSystem extends System
         }
 
         $sysResponse = exec(
+            'PATH='.getenv('PATH').'; '.
             "if command -v ".$cmdName." >/dev/null 2>&1; then echo \"true\"; else echo \"false\"; fi;"
         );
 
