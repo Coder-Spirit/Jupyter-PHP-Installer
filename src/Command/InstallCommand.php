@@ -59,12 +59,14 @@ final class InstallCommand extends Command
         }
 
         try {
-            $installer->install($installPath);
+            $installer->install($installPath, (bool)$input->getOption('verbose'));
         } catch (\RuntimeException $e) {
             $io->writeError('ERROR: '.$e->getMessage());
             // TODO : Use verbosity levels to enable showing the stacktrace
             return self::RETURN_CODE_INSTALLER_INSTALL_ERROR;
         }
+
+        $io->write('<info>The Jupyter-PHP kernel has been successfully installed.</info>');
 
         return self::RETURN_CODE_OK;
     }

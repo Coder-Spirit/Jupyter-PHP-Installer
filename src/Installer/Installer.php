@@ -43,8 +43,9 @@ abstract class Installer
 
     /**
      * @param null|string $installPath
+     * @param bool $beVerbose
      */
-    public function install($installPath = null)
+    public function install($installPath = null, $beVerbose = false)
     {
         $installPath = (null !== $installPath) ? $installPath : $this->getInstallPath();
         if (null !== $installPath && !$this->system->validatePath($installPath)) {
@@ -52,7 +53,7 @@ abstract class Installer
         }
 
         $this->system->ensurePath($installPath);
-        $this->executeComposerCommand($installPath);
+        $this->executeComposerCommand($installPath, $beVerbose);
 
         $this->installKernel();
     }
@@ -69,17 +70,33 @@ abstract class Installer
 
     /**
      * @param string $installPath
+     * @param bool $beVerbose
      */
-    protected function executeComposerCommand($installPath)
+    protected function executeComposerCommand($installPath, $beVerbose = false)
     {
         $composerStatus = 0;
 
-        echo "\n";
-        passthru(
-            'PATH='.getenv('PATH').' '.$this->composerCmd.' --working-dir="'.$installPath.'" create-project dawehner/jupyter-php pkgs',
-            $composerStatus
-        );
-        echo "\n";
+        if ($beVerbose) {
+            echo "\n";
+            passthru(
+                'PATH=' . getenv('PATH') . ' ' .
+                $this->composerCmd . ' --prefer-dist --no-interaction --working-dir="' .
+                $installPath .'" create-project litipk/jupyter-php=dev-master pkgs',
+
+                $composerStatus
+            );
+            echo "\n";
+        } else {
+            $composerOutputLines = [];
+            $composerOutput = exec(
+                'PATH=' . getenv('PATH') . ' ' .
+                $this->composerCmd . ' --prefer-dist --no-interaction --no-progress --working-dir="' .
+                $installPath .'" create-project litipk/jupyter-php=dev-master pkgs > /dev/null 2>&1 ',
+
+                $composerOutputLines,
+                $composerStatus
+            );
+        }
 
         if ($composerStatus !== 0) {
             throw new \RuntimeException('Error while trying to download Jupyter-PHP dependencies with Composer.');
