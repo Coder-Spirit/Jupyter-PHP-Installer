@@ -117,7 +117,7 @@ abstract class UnixSystem extends System
     {
         $absPath = $this->getAbsolutePath($path);
 
-        if (false === mkdir($this->getAbsolutePath($path), 0755, true)) {
+        if (!file_exists($absPath) && false === mkdir($absPath, 0755, true)) {
             throw new \RuntimeException('Unable to create the specified directory ('.$absPath.').');
         }
 
