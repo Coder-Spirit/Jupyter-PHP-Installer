@@ -1,5 +1,8 @@
 composer.lock
-private.key
+.travis/phar_private.key
+.travis/deploy_private.key
+.travis/secrets.tar
 vendor/
 jupyter-php-installer.phar
+jupyter-php-installer.phar.pubkey
 .idea

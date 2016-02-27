@@ -7,7 +7,7 @@ namespace Litipk\JupyterPhpInstaller\Installer;
 use Litipk\JupyterPhpInstaller\System\UnixSystem;
 
 
-final class LinuxInstaller extends Installer
+final class LinuxInstaller extends UnixInstaller
 {
     /**
      * LinuxInstaller constructor.

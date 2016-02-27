@@ -69,6 +69,12 @@ abstract class Installer
     protected abstract function installKernel();
 
     /**
+     * @param $installPath
+     * @return mixed
+     */
+    protected abstract function executeSilentComposerCommand($installPath);
+
+    /**
      * @param string $installPath
      * @param bool $beVerbose
      */
@@ -87,15 +93,7 @@ abstract class Installer
             );
             echo "\n";
         } else {
-            $composerOutputLines = [];
-            $composerOutput = exec(
-                'PATH=' . getenv('PATH') . ' ' .
-                $this->composerCmd . ' --prefer-dist --no-interaction --no-progress --working-dir="' .
-                $installPath .'" create-project litipk/jupyter-php=dev-master pkgs > /dev/null 2>&1 ',
-
-                $composerOutputLines,
-                $composerStatus
-            );
+            $composerStatus = $this->executeSilentComposerCommand($installPath);
         }
 
         if ($composerStatus !== 0) {
