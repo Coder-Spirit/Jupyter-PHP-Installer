@@ -19,20 +19,53 @@ git fetch deploy
 # Get Box and build
 wget https://github.com/box-project/box2/releases/download/2.7.0/box-2.7.0.phar -O ./bin/box.phar
 chmod a+x ./bin/box.phar
-./bin/box.phar build -vv
 
-# To allow checkout gh-pages branch
+# Unsigned build
+./bin/box.phar build -vv
 mv jupyter-php-installer.phar jupyter-php-installer.phar.tmp
-mv jupyter-php-installer.phar.pubkey jupyter-php-installer.phar.pubkey.tmp
+
+# Signed build
+./bin/box.phar build -c box.signed.json -vv
+mv jupyter-php-installer.phar jupyter-php-installer.signed.phar.tmp
+mv jupyter-php-installer.phar.pubkey jupyter-php-installer.signed.phar.pubkey.tmp
 
 # Checkout gh-pages and add PHAR file and version:
 git checkout -b gh-pages deploy/gh-pages
 
+# Moving unsigned build
 mv jupyter-php-installer.phar.tmp dist/jupyter-php-installer.phar
-mv jupyter-php-installer.phar.pubkey.tmp dist/jupyter-php-installer.phar.pubkey
+cd dist && md5sum jupyter-php-installer.phar > jupyter-php-installer.phar.md5 && cd ..
+cd dist && sha1sum jupyter-php-installer.phar > jupyter-php-installer.phar.sha1 && cd ..
+cd dist && sha256sum jupyter-php-installer.phar > jupyter-php-installer.phar.sha256 && cd ..
+cd dist && sha512sum jupyter-php-installer.phar > jupyter-php-installer.phar.sha512 && cd ..
 
-sha1sum dist/jupyter-php-installer.phar > dist/jupyter-php-installer.phar.version
-git add dist/jupyter-php-installer.phar dist/jupyter-php-installer.phar.version dist/jupyter-php-installer.phar.pubkey
+# Moving signed build
+mv jupyter-php-installer.signed.phar.tmp dist/jupyter-php-installer.signed.phar
+mv jupyter-php-installer.signed.phar.pubkey.tmp dist/jupyter-php-installer.signed.phar.pubkey
+cd dist && md5sum jupyter-php-installer.signed.phar > jupyter-php-installer.signed.phar.md5 && cd ..
+cd dist && sha1sum jupyter-php-installer.signed.phar > jupyter-php-installer.signed.phar.sha1 && cd ..
+cd dist && sha256sum jupyter-php-installer.signed.phar > jupyter-php-installer.signed.phar.sha256 && cd ..
+cd dist && sha512sum jupyter-php-installer.signed.phar > jupyter-php-installer.signed.phar.sha512 && cd ..
+cd dist && md5sum jupyter-php-installer.signed.phar.pubkey > jupyter-php-installer.signed.phar.pubkey.md5 && cd ..
+cd dist && sha1sum jupyter-php-installer.signed.phar.pubkey > jupyter-php-installer.signed.phar.pubkey.sha1 && cd ..
+cd dist && sha256sum jupyter-php-installer.signed.phar.pubkey > jupyter-php-installer.signed.phar.pubkey.sha256 && cd ..
+cd dist && sha512sum jupyter-php-installer.signed.phar.pubkey > jupyter-php-installer.signed.phar.pubkey.sha512 && cd ..
+
+# Adding phar files
+git add dist/jupyter-php-installer.phar dist/jupyter-php-installer.signed.phar
+
+# Adding public keys
+git add dist/jupyter-php-installer.signed.phar.pubkey
+
+# Adding "unsigned" checksums
+git add dist/jupyter-php-installer.phar.md5 dist/jupyter-php-installer.phar.sha1 dist/jupyter-php-installer.phar.sha256 dist/jupyter-php-installer.phar.sha512
+
+# Adding "signed" checksums
+git add dist/jupyter-php-installer.signed.phar.md5 dist/jupyter-php-installer.signed.phar.sha1 dist/jupyter-php-installer.signed.phar.sha256 dist/jupyter-php-installer.signed.phar.sha512
+
+# Adding public key checksums
+git add dist/jupyter-php-installer.signed.phar.pubkey.md5 dist/jupyter-php-installer.signed.phar.pubkey.sha1 dist/jupyter-php-installer.signed.phar.pubkey.sha256 dist/jupyter-php-installer.signed.phar.pubkey.sha512
+
 
 # Commit and push:
 git commit -m 'Rebuilt phar'

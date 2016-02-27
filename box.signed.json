@@ -1,6 +1,7 @@
 {
     "alias": "jupyter-php-installer.phar",
     "chmod": "0755",
+    "algorithm": "OPENSSL",
     "compression": "GZ",
     "directories": ["src"],
     "files": [
@@ -17,5 +18,6 @@
     "git-version": "package_version",
     "main": "src/EntryPoint/main.php",
     "output": "jupyter-php-installer.phar",
-    "stub": true
+    "stub": true,
+    "key": ".travis/phar_private.key"
 }
