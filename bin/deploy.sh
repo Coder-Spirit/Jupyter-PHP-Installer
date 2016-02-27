@@ -18,7 +18,6 @@ git fetch deploy
 
 # Get Box and build
 wget https://github.com/box-project/box2/releases/download/2.7.0/box-2.7.0.phar -O ./bin/box.phar
-cp .travis/phar_public.key ./public.key
 ./bin/box.phar build -vv
 
 # To allow checkout gh-pages branch
