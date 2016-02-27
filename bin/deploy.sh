@@ -5,8 +5,8 @@ tar xvf .travis/secrets.tar -C .travis
 
 # Setup SSH agent:
 eval "$(ssh-agent -s)" #start the ssh agent
-chmod 600 .travis/phar_private.key
-ssh-add .travis/phar_private.key
+chmod 600 .travis/deploy_private.key
+ssh-add .travis/deploy_private.key
 
 # Setup git defaults:
 git config --global user.email "castarco@gmail.com"
