@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# We only generate packages for tagged versions
+git describe --tags --exact-match HEAD || {
+    exit 0
+}
+
 # Unpack secrets
 tar xvf .travis/secrets.tar -C .travis
 
