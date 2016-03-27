@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Starting build";
+
 # We only generate packages for tagged versions
 git describe --tags --exact-match HEAD || {
     echo "Skipped build";
