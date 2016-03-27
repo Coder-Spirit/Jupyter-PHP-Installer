@@ -47,4 +47,41 @@ final class WindowsSystem extends System
     {
         return 'composer';
     }
+
+    /**
+     * Returns true if the path is a "valid" path and is writable (event if the complete path does not yet exist).
+     * @param string $path
+     * @return boolean
+     */
+    public function validatePath($path)
+    {
+        // TODO: Implement validatePath() method.
+    }
+
+    /**
+     * @param string $path
+     * @return string The "absolute path" version of $path.
+     */
+    public function ensurePath($path)
+    {
+        // TODO: Implement ensurePath() method.
+    }
+
+    /**
+     * @param string $path
+     * @return boolean
+     */
+    protected function isAbsolutePath($path)
+    {
+        // TODO: Implement isAbsolutePath() method.
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    protected function getAbsolutePath($path)
+    {
+        // TODO: Implement getAbsolutePath() method.
+    }
 }

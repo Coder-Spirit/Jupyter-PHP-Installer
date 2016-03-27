@@ -87,7 +87,7 @@ abstract class Installer
             passthru(
                 'PATH=' . getenv('PATH') . ' ' .
                 $this->composerCmd . ' --prefer-dist --no-interaction --working-dir="' .
-                $installPath .'" create-project litipk/jupyter-php=dev-master pkgs',
+                $installPath .'" create-project litipk/jupyter-php=0.* pkgs',
 
                 $composerStatus
             );

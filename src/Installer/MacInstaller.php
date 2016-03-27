@@ -42,7 +42,7 @@ final class MacInstaller extends UnixInstaller
             'argv' => ['php', $this->getInstallPath().'/pkgs/src/kernel.php', '{connection_file}'],
             'display_name' => 'PHP',
             'language' => 'php',
-            'env' => new \Stdclass
+            'env' => new \stdClass
         ]);
 
         $currentUser = $this->system->getCurrentUser();

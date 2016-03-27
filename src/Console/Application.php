@@ -74,6 +74,9 @@ final class Application extends BaseApplication
 
     /**
      * Runs the application's business logic.
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {

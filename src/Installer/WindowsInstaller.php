@@ -18,4 +18,29 @@ final class WindowsInstaller extends Installer
     {
         parent::__construct($system, $composerCmd);
     }
+
+    /**
+     * @return string
+     */
+    protected function getInstallPath()
+    {
+        // TODO: Implement getInstallPath() method.
+    }
+
+    /**
+     *
+     */
+    protected function installKernel()
+    {
+        // TODO: Implement installKernel() method.
+    }
+
+    /**
+     * @param $installPath
+     * @return mixed
+     */
+    protected function executeSilentComposerCommand($installPath)
+    {
+        // TODO: Implement executeSilentComposerCommand() method.
+    }
 }
