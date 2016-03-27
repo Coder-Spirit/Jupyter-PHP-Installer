@@ -2,7 +2,8 @@
 
 # We only generate packages for tagged versions
 git describe --tags --exact-match HEAD || {
-    exit 0
+    echo "Skipped build";
+    exit 0;
 }
 
 # Unpack secrets
