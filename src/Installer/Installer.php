@@ -82,6 +82,8 @@ abstract class Installer
     {
         $composerStatus = 0;
 
+        rmdir($installPath.DIRECTORY_SEPARATOR.'pkgs');
+        
         if ($beVerbose) {
             echo "\n";
             passthru(
