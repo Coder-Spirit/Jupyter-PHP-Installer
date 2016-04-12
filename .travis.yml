@@ -32,6 +32,9 @@ install:
 script:
   - vendor/bin/phpunit
 
-after_success: 
+after_success:
+  - echo "EXECUTE_DEPLYMENT   = $EXECUTE_DEPLOYMENT"
+  - echo "TRAVIS_BRANCH       = $TRAVIS_BRANCH"
+  - echo "TRAVIS_PULL_REQUEST = $TRAVIS_PULL_REQUEST"
   - if [[ $EXECUTE_DEPLOYMENT == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then composer install --no-dev --prefer-dist --no-interaction ; fi
   - if [[ $EXECUTE_DEPLOYMENT == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then ./bin/deploy.sh ; fi
