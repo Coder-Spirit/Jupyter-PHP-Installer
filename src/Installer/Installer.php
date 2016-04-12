@@ -82,7 +82,18 @@ abstract class Installer
     {
         $composerStatus = 0;
 
-        rmdir($installPath.DIRECTORY_SEPARATOR.'pkgs');
+        $pkgsDir = $installPath.DIRECTORY_SEPARATOR.'pkgs';
+        if (file_exists($pkgsDir)) {
+            foreach (
+                new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($pkgsDir, \FilesystemIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::CHILD_FIRST
+                ) as $path
+            ) {
+                $path->isDir() && !$path->isLink() ? rmdir($path->getPathname()) : unlink($path->getPathname());
+            }
+            rmdir($pkgsDir);
+        }
         
         if ($beVerbose) {
             echo "\n";
