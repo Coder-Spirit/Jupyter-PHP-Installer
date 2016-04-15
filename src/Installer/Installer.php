@@ -4,6 +4,7 @@
 namespace Litipk\JupyterPhpInstaller\Installer;
 
 
+use Litipk\JupyterPhpInstaller\System\LinuxSystem;
 use Litipk\JupyterPhpInstaller\System\MacSystem;
 use Litipk\JupyterPhpInstaller\System\System;
 use Litipk\JupyterPhpInstaller\System\UnixSystem;
@@ -30,7 +31,7 @@ abstract class Installer
             throw new \RuntimeException('Unable to find the composer executable.');
         }
 
-        if ($system instanceof UnixSystem) {
+        if ($system instanceof LinuxSystem) {
             return new LinuxInstaller($system, $composerCmd);
         } elseif ($system instanceof MacSystem) {
             return new MacInstaller($system, $composerCmd);
