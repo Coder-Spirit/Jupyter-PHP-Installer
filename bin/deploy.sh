@@ -8,6 +8,8 @@ git describe --tags --exact-match HEAD || {
     exit 0;
 }
 
+openssl aes-256-cbc -K $encrypted_f21abcc37842_key -iv $encrypted_f21abcc37842_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
+
 # Unpack secrets
 tar xvf .travis/secrets.tar -C .travis
 
