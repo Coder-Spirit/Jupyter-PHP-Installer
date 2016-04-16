@@ -35,6 +35,9 @@ abstract class Installer
             return new LinuxInstaller($system, $composerCmd);
         } elseif ($system instanceof MacSystem) {
             return new MacInstaller($system, $composerCmd);
+        } elseif ($system instanceof UnixSystem) {
+            // Fallback for BSD systems
+            return new LinuxInstaller($system, $composerCmd);
         } elseif ($system instanceof WindowsSystem) {
             return new WindowsInstaller($system, $composerCmd);
         } else {
