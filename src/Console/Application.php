@@ -42,9 +42,8 @@ final class Application extends BaseApplication
         }
 
         if (!$shutdownRegistered) {
-            $shutdownRegistered = true;
-
             register_shutdown_function(function () { $this->handleShutdown(); });
+            $shutdownRegistered = true;
         }
 
         parent::__construct('Jupyter-PHP Installer', '0.1');
