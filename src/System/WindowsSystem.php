@@ -55,7 +55,38 @@ final class WindowsSystem extends System
      */
     public function validatePath($path)
     {
-        // TODO: Implement validatePath() method.
+        $absPath = $this->getAbsolutePath($path);
+        $absPathParts = explode(DIRECTORY_SEPARATOR, $absPath);
+        $nSteps = count($absPathParts);
+
+        $tmpPath = $absPathParts[0];
+        $prevReadable = false;
+        $prevWritable = false;
+
+        for ($i = 1; $i < $nSteps; $i++) {
+            $tmpPath .= DIRECTORY_SEPARATOR . $absPathParts[$i];
+
+            if (file_exists($tmpPath)) {
+                if (!is_dir($tmpPath)) {
+                    if (is_link($tmpPath)) {
+                        $linkPath = readlink($tmpPath);
+                        if (false === $linkPath || !is_dir($linkPath)) {
+                            return false;
+                        }
+                        $tmpPath = $linkPath;
+                    } else {
+                        return false;
+                    }
+                }
+
+                $prevReadable = is_readable($tmpPath);
+                $prevWritable = is_writable($tmpPath);
+            } else {
+                return ($prevReadable && $prevWritable);
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -64,7 +95,13 @@ final class WindowsSystem extends System
      */
     public function ensurePath($path)
     {
-        // TODO: Implement ensurePath() method.
+        $absPath = $this->getAbsolutePath($path);
+
+        if (!file_exists($absPath) && false === mkdir($absPath, 0755, true)) {
+            throw new \RuntimeException('Unable to create the specified directory (' . $absPath . ').');
+        }
+
+        return $absPath;
     }
 
     /**
@@ -73,7 +110,7 @@ final class WindowsSystem extends System
      */
     protected function isAbsolutePath($path)
     {
-        // TODO: Implement isAbsolutePath() method.
+        return preg_match('/^[a-z]\:/i', $path) === 1;
     }
 
     /**
@@ -82,6 +119,11 @@ final class WindowsSystem extends System
      */
     protected function getAbsolutePath($path)
     {
-        // TODO: Implement getAbsolutePath() method.
+        $path = $this->isAbsolutePath($path) ? $path : (getcwd() . DIRECTORY_SEPARATOR . $path);
+
+        // Normalise directory separators
+        $path = preg_replace('/[\/\\\\]/u', DIRECTORY_SEPARATOR, $path);
+
+        return $path;
     }
 }
