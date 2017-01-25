@@ -65,7 +65,7 @@ final class WindowsInstaller extends Installer
 
         exec(
             $this->composerCmd . ' --prefer-dist --no-interaction --no-progress --working-dir="' .
-            $installPath . '" create-project litipk/jupyter-php=dev-master' . ' pkgs > nul 2>&1 ',
+            $installPath . '" create-project litipk/jupyter-php=dev-master pkgs > nul 2>&1 ',
 
             $composerOutputLines,
             $composerStatus
