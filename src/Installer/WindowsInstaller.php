@@ -27,7 +27,7 @@ final class WindowsInstaller extends Installer
         $currentUser = $this->system->getCurrentUser();
 
         if ('Administrator' === $currentUser) {
-            return 'C:\ProgramData\jupyter-php';
+            return $this->getProgramDataPath() . '\jupyter-php';
         } else {
             return $this->system->getCurrentUserHome() . '\.jupyter-php';
         }
@@ -48,8 +48,8 @@ final class WindowsInstaller extends Installer
         $currentUser = $this->system->getCurrentUser();
 
         $kernelSpecPath = ('Administrator' === $currentUser) ?
-            'C:\ProgramData\jupyter\kernels\jupyter-php' :
-            $this->system->getCurrentUserHome() . '\AppData\Roaming\jupyter\kernels\jupyter-php';
+            $this->getProgramDataPath() . '\jupyter\kernels\jupyter-php' :
+            $this->getAppDataPath() . '\jupyter\kernels\jupyter-php';
 
         $this->system->ensurePath($kernelSpecPath);
         file_put_contents($kernelSpecPath . '\kernel.json', $kernelDef);
@@ -72,5 +72,23 @@ final class WindowsInstaller extends Installer
         );
 
         return $composerStatus;
+    }
+
+    private function getProgramDataPath()
+    {
+        if (function_exists('getenv') && false !== getenv('PROGRAMDATA')) {
+            return getenv('PROGRAMDATA');
+        } else {
+            throw new \RuntimeException('Unable to obtain the program data directory.');
+        }
+    }
+
+    private function getAppDataPath()
+    {
+        if (function_exists('getenv') && false !== getenv('APPDATA')) {
+            return getenv('APPDATA');
+        } else {
+            throw new \RuntimeException('Unable to obtain the app data directory.');
+        }
     }
 }
