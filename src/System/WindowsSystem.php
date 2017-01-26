@@ -45,7 +45,7 @@ final class WindowsSystem extends System
 
         $sysResponse = exec("where $cmdName > nul 2>&1 && echo true");
 
-        return filter_var($sysResponse, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        return filter_var($sysResponse, FILTER_VALIDATE_BOOLEAN);
     }
 
     /** @return string */
