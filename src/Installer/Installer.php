@@ -102,7 +102,7 @@ abstract class Installer
         if ($beVerbose) {
             echo "\n";
             passthru(
-                'PATH=' . getenv('PATH') . ' ' .
+                'PATH=' . getenv('PATH') . ' && ' .
                 $this->composerCmd . ' --prefer-dist --no-interaction --working-dir="' .
                 $installPath .'" create-project litipk/jupyter-php=0.* pkgs',
 
