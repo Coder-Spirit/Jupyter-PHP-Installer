@@ -39,7 +39,13 @@ final class WindowsSystem extends System
      */
     public function checkIfCommandExists($cmdName)
     {
-        return true;
+        if (!function_exists('exec')) {
+            return false;
+        }
+
+        $sysResponse = exec("where $cmdName > nul 2>&1 && echo true");
+
+        return filter_var($sysResponse, FILTER_VALIDATE_BOOLEAN);
     }
 
     /** @return string */

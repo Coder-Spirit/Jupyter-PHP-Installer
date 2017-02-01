@@ -47,7 +47,7 @@ abstract class UnixSystem extends System
             "if command -v ".$cmdName." >/dev/null 2>&1; then echo \"true\"; else echo \"false\"; fi;"
         );
 
-        return filter_var($sysResponse, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        return filter_var($sysResponse, FILTER_VALIDATE_BOOLEAN);
     }
 
     /** @return string|null */
