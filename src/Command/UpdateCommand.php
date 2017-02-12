@@ -16,7 +16,7 @@ final class UpdateCommand extends Command
     {
         $this
             ->setName('update')
-            ->setDescription('Uninstalls a Jupyter-PHP kernel.')
+            ->setDescription('Updates the installed Jupyter-PHP kernel.')
             ->setDefinition([
                 new InputOption('verbose', 'v|vv|vvv', InputOption::VALUE_NONE, 'Shows more details.'),
                 new InputArgument(
