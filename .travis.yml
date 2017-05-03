@@ -10,14 +10,9 @@ cache:
 matrix:
   fast_finish: true
   include:
-    - php: 5.5
-    - php: 5.6
-      env:
-        - EXECUTE_DEPLOYMENT=true
     - php: 7.0
-    - php: hhvm
-  allow_failures:
-    - php: hhvm
+        - EXECUTE_DEPLOYMENT=true
+    - php: 7.1
 
 before_install:
   - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]; then phpenv config-rm xdebug.ini ; fi
