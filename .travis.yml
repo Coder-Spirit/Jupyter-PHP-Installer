@@ -11,6 +11,7 @@ matrix:
   fast_finish: true
   include:
     - php: 7.0
+      env:
         - EXECUTE_DEPLOYMENT=true
     - php: 7.1
 
