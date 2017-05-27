@@ -46,7 +46,7 @@ final class Application extends BaseApplication
             $shutdownRegistered = true;
         }
 
-        parent::__construct('Jupyter-PHP Installer', '0.1');
+        parent::__construct('Jupyter-PHP Installer', '0.2');
     }
 
     /**
@@ -83,10 +83,10 @@ final class Application extends BaseApplication
         ErrorHandler::register($this->io);
         $io = $this->io;
 
-        if (PHP_VERSION_ID < 50509) {
+        if (PHP_VERSION_ID < 70000) {
             $io->writeError(
                 '<warning>'.
-                'This installer only officially supports PHP 5.5.9 and above, you will most likely encounter problems with your PHP '.
+                'This installer only officially supports PHP 7.0 and above, you will most likely encounter problems with your PHP '.
                 PHP_VERSION.', upgrading is strongly recommended'.
                 '</warning>'
             );
