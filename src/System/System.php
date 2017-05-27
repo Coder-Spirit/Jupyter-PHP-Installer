@@ -31,51 +31,44 @@ abstract class System
         }
     }
 
-    /** @return integer */
-    public abstract function getOperativeSystem();
+    public function isRunningAsAdmin(): bool
+    {
+        return ($this->getCurrentUser() === $this->getAdminUser());
+    }
 
-    /** @return string */
-    public abstract function getCurrentUser();
+    public abstract function getOperativeSystem(): int;
 
-    /** @return string */
-    public abstract function getCurrentUserHome();
+    public abstract function getCurrentUser(): string;
 
-    /**
-     * @param string $cmdName
-     * @return boolean
-     */
-    public abstract function checkIfCommandExists($cmdName);
+    public abstract function getAdminUser(): string;
+
+    public abstract function getCurrentUserHome(): string;
+
+    public abstract function checkIfCommandExists(string $cmdName): bool;
 
     /** @return string|null */
     public abstract function getComposerCommand();
 
     /**
      * Returns true if the path is a "valid" path and is writable (event if the complete path does not yet exist).
-     * @param string $path
-     * @return boolean
      */
-    public abstract function validatePath($path);
+    public abstract function validatePath(string $path): bool;
 
     /**
      * @param string $path
      * @return string The "absolute path" version of $path.
      */
-    public abstract function ensurePath($path);
+    public abstract function ensurePath(string $path): string;
 
-    /**
-     * @param string $path
-     * @return boolean
-     */
-    protected abstract function isAbsolutePath($path);
+    public abstract function wrapCommandToNullifyItsOutput(string $command): string;
 
-    /**
-     * @param string $path
-     * @return string
-     */
-    protected abstract function getAbsolutePath($path);
+    public abstract function wrapCommandToAttachEnvironmentVariable(string $varName, string $varValue, string $command);
 
-    /** @return integer */
-    private static function guessOperativeSystem()
+    protected abstract function isAbsolutePath(string $path): bool;
+
+    protected abstract function getAbsolutePath(string $path): string;
+
+    private static function guessOperativeSystem(): int
     {
         $phpOS = strtolower(PHP_OS);
 

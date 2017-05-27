@@ -6,8 +6,7 @@ namespace Litipk\JupyterPhpInstaller\System;
 
 abstract class UnixSystem extends System
 {
-    /** @return string */
-    public function getCurrentUser()
+    public function getCurrentUser(): string
     {
         if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
             $pwuData = posix_getpwuid(posix_geteuid());
@@ -19,8 +18,12 @@ abstract class UnixSystem extends System
         }
     }
 
-    /** @return string */
-    public function getCurrentUserHome()
+    public function getAdminUser(): string
+    {
+        return 'root';
+    }
+
+    public function getCurrentUserHome(): string
     {
         if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
             $pwuData = posix_getpwuid(posix_geteuid());
@@ -32,11 +35,7 @@ abstract class UnixSystem extends System
         }
     }
 
-    /**
-     * @param string $cmdName
-     * @return boolean
-     */
-    public function checkIfCommandExists($cmdName)
+    public function checkIfCommandExists(string $cmdName): bool
     {
         if (!function_exists('exec')) {
             return false;
@@ -70,10 +69,8 @@ abstract class UnixSystem extends System
 
     /**
      * Returns true if the path is a "valid" path and is writable (even if the complete path does not yet exist).
-     * @param string $path
-     * @return boolean
      */
-    public function validatePath($path)
+    public function validatePath(string $path): bool
     {
         $absPath = $this->getAbsolutePath($path);
         $absPathParts = preg_split('/\//', preg_replace('/(^\/|\/$)/', '', $absPath));
@@ -113,7 +110,7 @@ abstract class UnixSystem extends System
      * @param string $path
      * @return string The "absolute path" version of $path.
      */
-    public function ensurePath($path)
+    public function ensurePath(string $path): string
     {
         $absPath = $this->getAbsolutePath($path);
 
@@ -124,20 +121,22 @@ abstract class UnixSystem extends System
         return $absPath;
     }
 
-    /**
-     * @param string $path
-     * @return bool
-     */
-    protected function isAbsolutePath($path)
+    public function wrapCommandToNullifyItsOutput(string $command): string
+    {
+        return $command . ' > /dev/null 2>&1 ';
+    }
+
+    public function wrapCommandToAttachEnvironmentVariable(string $varName, string $varValue, string $command)
+    {
+        return ' ' . $varName . '=' . $varValue . ' && ' . $command;
+    }
+
+    protected function isAbsolutePath(string $path): bool
     {
         return (1 === preg_match('#^/#', $path));
     }
 
-    /**
-     * @param string $path
-     * @return string
-     */
-    protected function getAbsolutePath($path)
+    protected function getAbsolutePath(string $path): string
     {
         return $this->isAbsolutePath($path) ? $path : (getcwd() . DIRECTORY_SEPARATOR . $path);
     }

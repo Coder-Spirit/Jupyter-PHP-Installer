@@ -6,8 +6,7 @@ namespace Litipk\JupyterPhpInstaller\System;
 
 final class BsdSystem extends UnixSystem
 {
-    /** @return integer */
-    public function getOperativeSystem()
+    public function getOperativeSystem(): int
     {
         return self::OS_BSD;
     }

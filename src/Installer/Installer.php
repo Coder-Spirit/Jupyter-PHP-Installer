@@ -18,11 +18,7 @@ abstract class Installer
     /** @var  string */
     protected $composerCmd;
 
-    /**
-     * @param null|string $composerCmd
-     * @return Installer
-     */
-    public static function getInstaller($composerCmd = null)
+    public static function getInstaller(string $composerCmd = null): Installer
     {
         $system = System::getSystem();
         $composerCmd = (null !== $composerCmd) ? $composerCmd : $system->getComposerCommand();
@@ -45,11 +41,7 @@ abstract class Installer
         }
     }
 
-    /**
-     * @param null|string $installPath
-     * @param bool $beVerbose
-     */
-    public function install($installPath = null, $beVerbose = false)
+    public function install(string $installPath = null, bool $beVerbose = false)
     {
         $installPath = (null !== $installPath) ? $installPath : $this->getInstallPath();
         if (null !== $installPath && !$this->system->validatePath($installPath)) {
@@ -62,31 +54,130 @@ abstract class Installer
         $this->installKernel();
     }
 
-    /**
-     * @return string
-     */
-    protected abstract function getInstallPath();
+    protected function getInstallPath(): string
+    {
+        return ($this->system->isRunningAsAdmin())
+            ? $this->getAdminInstallPath()
+            : $this->getUserInstallPath();
+    }
 
-    /**
-     *
-     */
-    protected abstract function installKernel();
+    protected abstract function getAdminInstallPath(): string;
 
-    /**
-     * @param $installPath
-     * @return mixed
-     */
-    protected abstract function executeSilentComposerCommand($installPath);
+    protected abstract function getUserInstallPath(): string;
 
-    /**
-     * @param string $installPath
-     * @param bool $beVerbose
-     */
-    protected function executeComposerCommand($installPath, $beVerbose = false)
+    protected function installKernel()
+    {
+        $kernelDef = json_encode([
+            'argv' => [
+                'php',
+                $this->getKernelEntrypointPath(),
+                '{connection_file}'
+            ],
+            'display_name' => 'PHP',
+            'language' => 'php',
+            'env' => new \stdClass
+        ]);
+
+        $kernelSpecPath = ($this->system->isRunningAsAdmin())
+            ? $this->getJupyterKernelsMetadataAdminPath()
+            : $this->getJupyterKernelsMetadatUserPath();
+
+        $this->system->ensurePath($kernelSpecPath);
+        file_put_contents($kernelSpecPath.'/kernel.json', $kernelDef);
+    }
+
+    protected abstract function getKernelEntryPointPath(): string;
+
+    protected abstract function getJupyterKernelsMetadataAdminPath(): string;
+
+    protected abstract function getJupyterKernelsMetadatUserPath(): string;
+
+    protected function executeComposerCommand(string $installPath, bool $beVerbose = false)
     {
         $composerStatus = 0;
 
         $pkgsDir = $installPath.DIRECTORY_SEPARATOR.'pkgs';
+        $this->preparePackagesDir($pkgsDir);
+        
+        if ($beVerbose) {
+            echo "\n";
+            passthru(
+                $this->system->wrapCommandToAttachEnvironmentVariable(
+                    'PATH', getenv('PATH'),
+                    $this->getComposerInitCommand($pkgsDir) . ' && ' .
+                    $this->getComposerInstallCommand($pkgsDir)
+                ),
+
+                $composerStatus
+            );
+            echo "\n";
+        } else {
+            $composerStatus = $this->executeSilentComposerCommand($pkgsDir);
+        }
+
+        if (0 !== $composerStatus) {
+            throw new \RuntimeException('Error while trying to download Jupyter-PHP dependencies with Composer.');
+        }
+    }
+
+    protected function executeSilentComposerCommand(string $pkgsDir)
+    {
+        $composerOutputLines = [];
+
+        exec(
+            $this->system->wrapCommandToAttachEnvironmentVariable(
+                'PATH', getenv('PATH'),
+                $this->getComposerInitCommand($pkgsDir, true) . ' && ' .
+                $this->getComposerInstallCommand($pkgsDir, true)
+            ),
+
+            $composerOutputLines,
+            $composerStatus
+        );
+
+        return $composerStatus;
+    }
+
+    private function getComposerInitCommand(string $pkgsDir, bool $silent = false): string
+    {
+        $cmd = (
+            $this->composerCmd . ' init ' .
+            ' --no-interaction ' .
+            ' --name=jupyter-php-instance ' .
+            ' --type=project ' .
+            ' --working-dir="' . $pkgsDir . '" ' .
+            ' --require=litipk/jupyter-php=0.* '
+        );
+
+        return ($silent)
+            ? $this->system->wrapCommandToNullifyItsOutput($cmd)
+            : $cmd;
+    }
+
+    private function getComposerInstallCommand(string $pkgsDir, bool $silent = false): string
+    {
+        $cmd = (
+            $this->composerCmd . ' install ' .
+            ' --no-interaction ' .
+            ' --no-progress ' .
+            ' --prefer-dist ' .
+            ' --optimize-autoloader ' .
+            ' --working-dir="' . $pkgsDir . '" '
+        );
+
+        return ($silent)
+            ? $this->system->wrapCommandToNullifyItsOutput($cmd . ' --no-progress ')
+            : $cmd;
+    }
+
+    protected function __construct(System $system, string $composerCmd)
+    {
+        $this->system = $system;
+        $this->composerCmd = $composerCmd;
+    }
+
+    protected function preparePackagesDir(string $pkgsDir)
+    {
         if (file_exists($pkgsDir)) {
             foreach (
                 new \RecursiveIteratorIterator(
@@ -98,34 +189,6 @@ abstract class Installer
             }
             rmdir($pkgsDir);
         }
-        
-        if ($beVerbose) {
-            echo "\n";
-            passthru(
-                'PATH=' . getenv('PATH') . ' && ' .
-                $this->composerCmd . ' --prefer-dist --no-interaction --working-dir="' .
-                $installPath .'" create-project litipk/jupyter-php=0.* pkgs',
-
-                $composerStatus
-            );
-            echo "\n";
-        } else {
-            $composerStatus = $this->executeSilentComposerCommand($installPath);
-        }
-
-        if ($composerStatus !== 0) {
-            throw new \RuntimeException('Error while trying to download Jupyter-PHP dependencies with Composer.');
-        }
-    }
-
-    /**
-     * Installer constructor.
-     * @param System $system
-     * @param string $composerCmd
-     */
-    protected function __construct(System $system, $composerCmd)
-    {
-        $this->system = $system;
-        $this->composerCmd = $composerCmd;
+        mkdir($pkgsDir);
     }
 }

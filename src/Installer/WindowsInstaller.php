@@ -10,85 +10,38 @@ use Litipk\JupyterPhpInstaller\System\WindowsSystem;
 final class WindowsInstaller extends Installer
 {
     /**
-     * LinuxInstaller constructor.
-     * @param WindowsSystem $system
-     * @param string $composerCmd
+     * Also defined in the base class, only here to make more explicit its type.
+     * @var  WindowsSystem
      */
-    public function __construct(WindowsSystem $system, $composerCmd)
+    protected $system;
+
+    public function __construct(WindowsSystem $system, string $composerCmd)
     {
         parent::__construct($system, $composerCmd);
     }
 
-    /**
-     * @return string
-     */
-    protected function getInstallPath()
+    protected function getAdminInstallPath(): string
     {
-        $currentUser = $this->system->getCurrentUser();
-
-        if ('Administrator' === $currentUser) {
-            return $this->getProgramDataPath() . '\jupyter-php';
-        } else {
-            return $this->system->getCurrentUserHome() . '\.jupyter-php';
-        }
+        return $this->system->getProgramDataPath() . '\jupyter-php';
     }
 
-    /**
-     *
-     */
-    protected function installKernel()
+    protected function getUserInstallPath(): string
     {
-        $kernelDef = json_encode([
-            'argv' => ['php', $this->getInstallPath() . '\pkgs\src\kernel.php', '{connection_file}'],
-            'display_name' => 'PHP',
-            'language' => 'php',
-            'env' => new \stdClass
-        ]);
-
-        $currentUser = $this->system->getCurrentUser();
-
-        $kernelSpecPath = ('Administrator' === $currentUser) ?
-            $this->getProgramDataPath() . '\jupyter\kernels\jupyter-php' :
-            $this->getAppDataPath() . '\jupyter\kernels\jupyter-php';
-
-        $this->system->ensurePath($kernelSpecPath);
-        file_put_contents($kernelSpecPath . '\kernel.json', $kernelDef);
+        return $this->system->getCurrentUserHome() . '\.jupyter-php';
     }
 
-    /**
-     * @param $installPath
-     * @return mixed
-     */
-    protected function executeSilentComposerCommand($installPath)
+    protected function getKernelEntryPointPath(): string
     {
-        $composerOutputLines = [];
-
-        exec(
-            $this->composerCmd . ' --prefer-dist --no-interaction --no-progress --working-dir="' .
-            $installPath . '" create-project litipk/jupyter-php=dev-master pkgs > nul 2>&1 ',
-
-            $composerOutputLines,
-            $composerStatus
-        );
-
-        return $composerStatus;
+        return $this->getInstallPath() . '\pkgs\vendor\litipk\jupyter-php\src\kernel.php';
     }
 
-    private function getProgramDataPath()
+    protected function getJupyterKernelsMetadataAdminPath(): string
     {
-        if (function_exists('getenv') && false !== getenv('PROGRAMDATA')) {
-            return getenv('PROGRAMDATA');
-        } else {
-            throw new \RuntimeException('Unable to obtain the program data directory.');
-        }
+        return $this->system->getProgramDataPath() . '\jupyter\kernels\jupyter-php';
     }
 
-    private function getAppDataPath()
+    protected function getJupyterKernelsMetadatUserPath(): string
     {
-        if (function_exists('getenv') && false !== getenv('APPDATA')) {
-            return getenv('APPDATA');
-        } else {
-            throw new \RuntimeException('Unable to obtain the app data directory.');
-        }
+        return $this->system->getAppDataPath() . '\jupyter\kernels\jupyter-php';
     }
 }

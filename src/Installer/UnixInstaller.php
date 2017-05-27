@@ -6,23 +6,13 @@ namespace Litipk\JupyterPhpInstaller\Installer;
 
 abstract class UnixInstaller extends Installer
 {
-    /**
-     * @param $installPath
-     * @return mixed
-     */
-    protected function executeSilentComposerCommand($installPath)
+    protected function getJupyterKernelsMetadataAdminPath(): string
     {
-        $composerOutputLines = [];
+        return '/usr/local/share/jupyter/kernels/jupyter-php';
+    }
 
-        $composerOutput = exec(
-            'PATH=' . getenv('PATH') . ' ' .
-            $this->composerCmd . ' --prefer-dist --no-interaction --no-progress --working-dir="' .
-            $installPath . '" create-project litipk/jupyter-php=dev-master pkgs > /dev/null 2>&1 ',
-
-            $composerOutputLines,
-            $composerStatus
-        );
-
-        return $composerStatus;
+    protected function getKernelEntryPointPath(): string
+    {
+        return $this->getInstallPath() . '/pkgs/vendor/litipk/jupyter-php/src/kernel.php';
     }
 }

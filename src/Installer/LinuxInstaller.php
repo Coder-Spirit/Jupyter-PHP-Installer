@@ -19,39 +19,18 @@ final class LinuxInstaller extends UnixInstaller
         parent::__construct($system, $composerCmd);
     }
 
-    /**
-     * @return string
-     */
-    protected function getInstallPath()
+    protected function getAdminInstallPath(): string
     {
-        $currentUser = $this->system->getCurrentUser();
-
-        if ('root' === $currentUser) {
-            return '/opt/jupyter-php';
-        } else {
-            return $this->system->getCurrentUserHome().'/.jupyter-php';
-        }
+        return '/opt/jupyter-php';
     }
 
-    /**
-     *
-     */
-    protected function installKernel()
+    protected function getUserInstallPath(): string
     {
-        $kernelDef = json_encode([
-            'argv' => ['php', $this->getInstallPath().'/pkgs/src/kernel.php', '{connection_file}'],
-            'display_name' => 'PHP',
-            'language' => 'php',
-            'env' => new \stdClass
-        ]);
+        return $this->system->getCurrentUserHome().'/.jupyter-php';
+    }
 
-        $currentUser = $this->system->getCurrentUser();
-
-        $kernelSpecPath = ('root' === $currentUser) ?
-            '/usr/local/share/jupyter/kernels/jupyter-php' :
-            $this->system->getCurrentUserHome().'/.local/share/jupyter/kernels/jupyter-php';
-
-        $this->system->ensurePath($kernelSpecPath);
-        file_put_contents($kernelSpecPath.'/kernel.json', $kernelDef);
+    protected function getJupyterKernelsMetadatUserPath(): string
+    {
+        return $this->system->getCurrentUserHome().'/.local/share/jupyter/kernels/jupyter-php';
     }
 }
