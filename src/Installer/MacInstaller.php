@@ -26,6 +26,6 @@ final class MacInstaller extends UnixInstaller
 
     protected function getJupyterKernelsMetadatUserPath(): string
     {
-        return $this->system->getCurrentUserHome().'/.local/share/jupyter/kernels/jupyter-php';
+        return $this->system->getCurrentUserHome().'/Library/Jupyter/kernels/jupyter-php';
     }
 }
