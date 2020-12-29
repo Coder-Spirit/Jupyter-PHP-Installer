@@ -1,5 +1,5 @@
 {
-    "name": "litipk/jupyter-php-installer",
+    "name": "litipk/jupyter_php_installer",
     "description": "An installer for Jupyter-PHP",
     "type": "project",
     "license": "MIT",
