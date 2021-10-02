@@ -24,7 +24,7 @@ Go to the [main page](https://litipk.github.io/Jupyter-PHP-Installer/) and follo
  * You can also send us bug reports using the same bugtracker.
  * If you are really interested on helping to improve Litipk\BigNumbers, we recommend to read the [contributing guidelines](https://github.com/Litipk/Jupyter-PHP-Installer/blob/master/CONTRIBUTING.md).
  
-##Addendum
+## Addendum
 
 If you just want to run the installer from this repository without building a phar file you can do the following:
 
