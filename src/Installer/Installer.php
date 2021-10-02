@@ -92,7 +92,7 @@ abstract class Installer
 
     protected abstract function getJupyterKernelsMetadatUserPath(): string;
 
-    protected function executeComposerCommand(string $installPath, bool $beVerbose = true)
+    protected function executeComposerCommand(string $installPath, bool $beVerbose = false)
     {
         $composerStatus = 0;
 
@@ -189,6 +189,9 @@ abstract class Installer
             }
             rmdir($pkgsDir);
         }
-        mkdir($pkgsDir);
+
+        if (!mkdir($pkgsDir) && !is_dir($pkgsDir)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $pkgsDir));
+        }
     }
 }
