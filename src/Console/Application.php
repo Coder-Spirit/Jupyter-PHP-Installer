@@ -54,6 +54,7 @@ final class Application extends BaseApplication
      * @param InputInterface|null $input
      * @param OutputInterface|null $output
      * @return int
+     * @throws \Exception
      */
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
@@ -76,6 +77,7 @@ final class Application extends BaseApplication
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
+     * @throws \Throwable
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {

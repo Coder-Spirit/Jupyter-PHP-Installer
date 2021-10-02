@@ -92,7 +92,7 @@ abstract class Installer
 
     protected abstract function getJupyterKernelsMetadatUserPath(): string;
 
-    protected function executeComposerCommand(string $installPath, bool $beVerbose = false)
+    protected function executeComposerCommand(string $installPath, bool $beVerbose = true)
     {
         $composerStatus = 0;
 
@@ -143,7 +143,7 @@ abstract class Installer
         $cmd = (
             $this->composerCmd . ' init ' .
             ' --no-interaction ' .
-            ' --name=jupyter-php-instance ' .
+            ' --name=jupyter/php_instance ' .
             ' --type=project ' .
             ' --working-dir="' . $pkgsDir . '" ' .
             ' --require=litipk/jupyter-php=0.* '

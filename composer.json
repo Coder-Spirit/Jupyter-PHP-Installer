@@ -9,12 +9,13 @@
         "seld/cli-prompt": "^1.0"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-latest",
         "phpunit/phpunit": "^6.1"
     },
     "autoload": {
         "psr-4": { "Litipk\\JupyterPhpInstaller\\": "src/"}
     },
     "scripts": {
-
+        "execute": "@php src/EntryPoint/main.php"
     }
 }
