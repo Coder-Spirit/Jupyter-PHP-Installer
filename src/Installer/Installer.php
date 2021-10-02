@@ -143,7 +143,7 @@ abstract class Installer
         $cmd = (
             $this->composerCmd . ' init ' .
             ' --no-interaction ' .
-            ' --name=jupyter-php-instance ' .
+            ' --name=jupyter_php_instance ' .
             ' --type=project ' .
             ' --working-dir="' . $pkgsDir . '" ' .
             ' --require=litipk/jupyter-php=0.* '
@@ -189,6 +189,9 @@ abstract class Installer
             }
             rmdir($pkgsDir);
         }
-        mkdir($pkgsDir);
+
+        if (!mkdir($pkgsDir) && !is_dir($pkgsDir)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $pkgsDir));
+        }
     }
 }

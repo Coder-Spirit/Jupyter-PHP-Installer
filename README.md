@@ -23,7 +23,33 @@ Go to the [main page](https://litipk.github.io/Jupyter-PHP-Installer/) and follo
  * First of all, you can take a look on the [bugtracker](https://github.com/Litipk/Jupyter-PHP-Installer/issues) and decide if there is something that you want to do :wink: . If you think there are missing improvements in this file, then you are invited to modify the TODO list.
  * You can also send us bug reports using the same bugtracker.
  * If you are really interested on helping to improve Litipk\BigNumbers, we recommend to read the [contributing guidelines](https://github.com/Litipk/Jupyter-PHP-Installer/blob/master/CONTRIBUTING.md).
+ 
+## Addendum
 
+If you just want to run the installer from this repository without building a phar file you can do the following:
+
+```bash
+composer install
+composer execute install
+```
+
+To create an installer that works with the latest composer, you can run. Unfortunately this will need to be modified to work for Windows.
+
+```bash
+chmod +x bin/build.sh && bin/build.sh
+```
+
+The other important thing is to make sure you have the ZeroMQ extension installed or you will hit problems. The Jupyter notebook needs it for communicating with the language engine.
+
+[Installing ZeroMQ](https://gist.github.com/qutek/42889d82a4cbebf0e801943a9addbbab)
+
+And finally after you have your successful install
+
+```bash
+jupyter notebook
+```
+
+![](images/9f8869ef.png)
 
 ## License
 
